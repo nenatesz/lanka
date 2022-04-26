@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// CATEGORY ENUM
+// enum Category {
+//   fans
+//   lightings
+// }
+
+
+
+// USER MODEL
+model User {
+  id String @id @default(uuid())
+  email String @unique
+  username String @unique
+  firstName String?
+  lastName String?
+  password String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  reviews Review[]
+  orders Order[]
+  googleId String?
+  iat String?
+  role Role @default(USER)
+  products Product[]
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+
+// ADMIN USERS MODEL
+// model AdminUser {
+//   id String @id @default(uuid())
+//   email String @unique
+//   username String @unique
+//   password String
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   iat String?
+//   products Product[]
+// }
+
+// PRODUCT MODEL
+model Product {
+  id String @id @default(uuid())
+  name String
+  price Int
+  description String?
+  countInStock Int
+  category String?
+  rating Int?
+  reviews Review[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders Order[]
+  fileurl String[]
+  user User @relation(fields: [userId], references: [id])
+  userId String
+}
+
+// PRODUCT REVIEW MODEL
+model Review {
+  id String @id @default(uuid())
+  author User @relation(fields: [userId], references: [id])
+  userId String
+  product Product @relation(fields: [productId], references: [id])
+  productId String
+  createdAt DateTime @default(now())
+}
+
+// PRODUCT ORDER MODEL
+model Order {
+  id String @id @default(uuid())
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  product Product @relation(fields: [productId], references: [id])
+  productId String
+  createdAt DateTime @default(now())
+  quantity Int
+  isPaid Boolean @default(false)
+  isDelivered Boolean?
+  deliveredAt DateTime?
+  itemPrice Int
+  shippingPrice Int
+  taxPrice Int
+  totalPrice Int
+  shippingAddress ShippingAddress[]
+}
+
+// PRODUCT SHIPPING ADDRESS
+model ShippingAddress {
+  id String @id @default(uuid())
+  address String
+  state String
+  order Order @relation(fields: [orderId], references: [id])
+  orderId String
+}
