@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFilteredProducts = exports.getProductById = exports.getAllProducts = exports.createProduct = void 0;
+exports.getProductById = exports.getAllProducts = exports.createProduct = void 0;
 var client_1 = require("@prisma/client");
 var cloudinary_1 = __importDefault(require("cloudinary"));
 var fs_1 = __importDefault(require("fs"));
@@ -135,8 +135,8 @@ var getAllProducts = function (req, res, next) { return __awaiter(void 0, void 0
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                if (!req.query) return [3 /*break*/, 2];
                 _a = req.query, category = _a.category, gt = _a.gt, lt = _a.lt;
+                if (!(category || gt || lt)) return [3 /*break*/, 2];
                 price = void 0;
                 _category = category;
                 console.log("category", _category);
@@ -214,60 +214,3 @@ var getProductById = function (req, res, next) { return __awaiter(void 0, void 0
 }); };
 exports.getProductById = getProductById;
 // DELETE A PRODUCT
-// GET FILTERED PRODUCTS
-var getFilteredProducts = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, category, gt, lt, price, _category, products, err_2;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                _b.trys.push([0, 2, , 3]);
-                _a = req.query, category = _a.category, gt = _a.gt, lt = _a.lt;
-                price = void 0;
-                _category = category;
-                console.log("category", _category);
-                if (gt) {
-                    price = { gte: parseInt(gt) };
-                }
-                else if (lt) {
-                    price = { lte: parseInt(lt) };
-                }
-                return [4 /*yield*/, prisma.product.findMany({
-                        where: {
-                            OR: [
-                                {
-                                    AND: [
-                                        {
-                                            category: { equals: _category },
-                                        },
-                                        {
-                                            price: price
-                                        }
-                                    ]
-                                },
-                                {
-                                    category: { equals: _category },
-                                },
-                                {
-                                    price: price
-                                }
-                            ]
-                        }
-                    })];
-            case 1:
-                products = _b.sent();
-                if (!products) {
-                    return [2 /*return*/, res.status(400).json({
-                            status: "error",
-                            message: "Products not found",
-                        })];
-                }
-                return [2 /*return*/, res.json({ status: "success", products: products })];
-            case 2:
-                err_2 = _b.sent();
-                console.log(err_2);
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
-        }
-    });
-}); };
-exports.getFilteredProducts = getFilteredProducts;

@@ -78,8 +78,8 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
 // GET ALL PRODUCTS
 export const getAllProducts = async (req: Request, res: Response, next: NextFunction) => {
     let products;
-    if(req.query){
-        const {category, gt, lt} = req.query;
+    const {category, gt, lt} = req.query;
+    if(category || gt || lt){
         let price;
         const _category = <string>category
         console.log("category", _category);
@@ -143,49 +143,3 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
 
 // DELETE A PRODUCT
 
-// GET FILTERED PRODUCTS
-export const getFilteredProducts = async (req: Request, res: Response, next: NextFunction) => {
-    try{
-        const {category, gt, lt} = req.query;
-        let price;
-        const _category = <string>category
-        console.log("category", _category);
-        if(gt){            
-           price =  {gte: parseInt(<string>gt)}
-        }else if(lt){
-            price =  {lte: parseInt(<string>lt)}
-        }
-        const products = await prisma.product.findMany({
-            where: {
-                OR: [
-                    {
-                        AND: [
-                            {
-                                category: {equals: _category},
-                            },
-                            {
-                                price: price
-                            }
-                        ]
-                },
-                {
-                    category: {equals: _category},
-                },
-                {
-                    price: price
-                }
-            ]
-            }
-        });
-        if (!products){
-            return res.status(400).json({
-                status: "error",
-                message: "Products not found",
-            });
-        }
-        return res.json({status: "success", products});
-
-    }catch(err){
-        console.log(err)
-    }
-}

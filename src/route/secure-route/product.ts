@@ -1,6 +1,6 @@
 import express from "express";
 import {isAdmin, isAuthUser} from "../../controller/auth";
-import { createProduct, getAllProducts, getFilteredProducts, getProductById } from "../../controller/product";
+import { createProduct, getAllProducts, getProductById } from "../../controller/product";
 import passport from "passport";
 import "../../middleware/configStrategy";
 import upload from "../../middleware/multer";
@@ -16,6 +16,6 @@ productRouter.get("/?", getAllProducts);
 // GET A PRODUCT
 productRouter.get("/id/:id", getProductById);
 // GET PRODUCTS BY FILTER
-productRouter.get("/filter?", getFilteredProducts);
+
 
 export default productRouter;

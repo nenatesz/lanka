@@ -17,5 +17,4 @@ productRouter.get("/?", product_1.getAllProducts);
 // GET A PRODUCT
 productRouter.get("/id/:id", product_1.getProductById);
 // GET PRODUCTS BY FILTER
-productRouter.get("/filter?", product_1.getFilteredProducts);
 exports.default = productRouter;
